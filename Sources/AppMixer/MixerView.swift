@@ -251,22 +251,41 @@ struct VolumeBar: View {
     var label = "Volume"
     let onChange: (Double) -> Void
 
+    /// The round knob only appears while the bar is being dragged; the rest of the time it's a clean bar.
+    @State private var dragging = UserDefaults.standard.bool(forKey: "previewKnob") // preview: show the knob
+
     var body: some View {
         GeometryReader { geo in
             let width = max(geo.size.width, 1)
+            let knob = max(thickness * 2.4, 12)
             ZStack(alignment: .leading) {
                 Capsule().fill(Color.primary.opacity(0.2))
+                    .frame(height: thickness)
                 Capsule()
                     .fill(Color.primary.opacity(dimmed ? 0.45 : 1))
-                    .frame(width: max(thickness, width * value))
+                    .frame(width: max(thickness, width * value), height: thickness)
                     .shadow(color: .black.opacity(0.18), radius: 1, y: 0.5)
+                Circle()
+                    .fill(Color.white)
+                    .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
+                    .frame(width: knob, height: knob)
+                    .offset(x: min(max(width * value - knob / 2, -knob / 4), width - knob * 3 / 4))
+                    .scaleEffect(dragging ? 1 : 0.4)
+                    .opacity(dragging ? 1 : 0)
+                    .allowsHitTesting(false)
             }
-            .frame(height: thickness)
             .frame(maxHeight: .infinity)
             .contentShape(Rectangle())
-            .gesture(DragGesture(minimumDistance: 0).onChanged { drag in
-                onChange(min(1, max(0, drag.location.x / width)))
-            })
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { drag in
+                        if !dragging { withAnimation(.spring(duration: 0.2)) { dragging = true } }
+                        onChange(min(1, max(0, drag.location.x / width)))
+                    }
+                    .onEnded { _ in
+                        withAnimation(.easeOut(duration: 0.25)) { dragging = false }
+                    }
+            )
         }
         .frame(height: 18)
         .accessibilityElement()

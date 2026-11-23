@@ -46,7 +46,7 @@ open build/AppMixer.app
 
 - `--preview` opens the panel in the middle of the screen and keeps it open
   (`--preview-quiet` and `--preview-mic` force those states, `-previewBackdrop white|black` adds a backdrop,
-  `-previewCharging YES` fakes charging AirPods).
+  `-previewCharging YES` fakes charging AirPods, `-previewKnob YES` shows the slider knob).
 - `--devicetest <logfile>` nudges the output and input volume by 10%, reads it back, and restores it.
 - `--selftest <bundleID|pid> <volume> <seconds> <logfile>` taps one app and logs in/out peak levels.
 
