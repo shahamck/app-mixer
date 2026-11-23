@@ -1,0 +1,29 @@
+AppMixer — volume for every app, right in your menu bar
+=====================================================
+
+Install
+1. Drag AppMixer into the Applications folder.
+2. Open Applications and double-click AppMixer.
+
+First launch: "AppMixer can't be opened" / "Apple could not verify…"
+AppMixer isn't from the Mac App Store, so macOS asks you to confirm once:
+1. Click Done (or OK) on that message.
+2. Open System Settings › Privacy & Security.
+3. Scroll down to the message about AppMixer and click "Open Anyway".
+4. Enter your password, then click Open.
+You only need to do this the first time.
+
+Using it
+• Click the slider icon in the menu bar.
+• Quiet: just your output device and volume.
+• When apps play sound, each one appears under the speaker with its own volume.
+• When an app uses the microphone, the mic level appears too.
+• Click the device name to switch speakers or microphones.
+• Click either speaker icon to mute.
+• AirPods and other Bluetooth devices show their battery (left, right, case).
+• Right-click the panel for options and Quit.
+
+The first time you change an app's volume, macOS asks to let AppMixer capture
+audio from other apps. Allow it; nothing is recorded or saved.
+
+Requires macOS 14.2 or later. Works on Apple silicon and Intel Macs.

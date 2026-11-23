@@ -1,0 +1,14 @@
+# SwiftPM / Xcode build output
+.build/
+build/
+dist/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+.swiftpm/
+
+# Design option sheets (working files)
+glass-options.png
+menu-bar-icon-options.png
+
+.DS_Store

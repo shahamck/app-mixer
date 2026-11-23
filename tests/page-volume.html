@@ -1,0 +1,58 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>page-volume test</title>
+<script>
+  // Keep the browser's real getter so the test can see what the element actually plays at.
+  window.realVolume = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "volume").get;
+  window.states = [];
+  document.addEventListener("appmixer:state", (e) => states.push(JSON.parse(e.detail)));
+</script>
+<script src="../Extension/page-volume.js"></script>
+<pre id="out">running…</pre>
+<script>
+  const results = [];
+  const check = (name, ok, detail = "") => results.push(`${ok ? "PASS" : "FAIL"}  ${name} ${detail}`);
+  const gain = (g) => document.dispatchEvent(new CustomEvent("appmixer:gain", { detail: String(g) }));
+  const near = (a, b) => Math.abs(a - b) < 1e-6;
+
+  const a = new Audio();
+  a.volume = 0.8;
+  check("page volume untouched at gain 1", near(realVolume.call(a), 0.8));
+  gain(0.5);
+  check("gain 0.5 halves real volume", near(realVolume.call(a), 0.4), realVolume.call(a));
+  check("page still reads its own volume", near(a.volume, 0.8), a.volume);
+  a.volume = 0.6;
+  check("page change is scaled", near(realVolume.call(a), 0.3), realVolume.call(a));
+  gain(0);
+  check("mute (gain 0)", near(realVolume.call(a), 0));
+  gain(1);
+  check("restore to page volume", near(realVolume.call(a), 0.6));
+
+  let threw = false;
+  try { a.volume = 2; } catch (_) { threw = true; }
+  check("out-of-range still throws like normal", threw);
+
+  const b = new Audio();
+  gain(0.25);
+  b.play().catch(() => {}); // element created after gain, page never sets volume
+  check("new element gets gain on play()", near(realVolume.call(b), 0.25), realVolume.call(b));
+
+  const ctx = new AudioContext();
+  const dest = ctx.destination;
+  check("Web Audio destination is wrapped", dest instanceof GainNode);
+  check("wrapped node starts at current gain", near(dest.gain.value, 0.25), dest.gain.value);
+  check("maxChannelCount still readable", typeof dest.maxChannelCount === "number", dest.maxChannelCount);
+  check("same node returned each time", ctx.destination === dest);
+  const osc = ctx.createOscillator();
+  let connected = true;
+  try { osc.connect(ctx.destination); } catch (_) { connected = false; }
+  check("nodes connect to wrapped destination", connected);
+  const off = new OfflineAudioContext(1, 128, 44100);
+  check("offline contexts left alone", !(off.destination instanceof GainNode));
+
+  setTimeout(() => {
+    check("state events are reported", states.length > 0, JSON.stringify(states.at(-1)));
+    document.getElementById("out").textContent = results.join("\n");
+    document.title = results.some((r) => r.startsWith("FAIL")) ? "FAILED" : "ALL PASSED";
+  }, 1300);
+</script>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root { color-scheme: light dark; --muted: #8a8a8e; --accent: #0a84ff; }
+  body { margin: 0; width: 320px; font: 12px -apple-system, system-ui, sans-serif; }
+  h1 { font-size: 11px; font-weight: 600; color: var(--muted); margin: 10px 14px 4px; }
+  .row { display: flex; align-items: center; gap: 8px; padding: 6px 14px; }
+  .row img, .row .dot { width: 16px; height: 16px; border-radius: 3px; flex: none; }
+  .row .dot { background: var(--muted); opacity: .4; }
+  .title { width: 100px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .row.idle .title { color: var(--muted); }
+  input[type=range] { flex: 1; min-width: 0; accent-color: var(--accent); }
+  .pct { width: 32px; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  button { border: 0; background: none; cursor: pointer; font-size: 14px; padding: 0 2px; color: var(--muted); }
+  button.on { color: #ff453a; }
+  .empty { padding: 18px 14px 22px; color: var(--muted); text-align: center; }
+</style>
+</head>
+<body>
+  <h1>Tabs</h1>
+  <div id="list"></div>
+  <script src="popup.js"></script>
+</body>
+</html>

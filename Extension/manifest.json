@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "AppMixer Tabs",
+  "version": "0.1",
+  "description": "Per-tab volume and mute. Works on its own or with the AppMixer menu bar app.",
+  "permissions": ["tabs", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["page-volume.js"],
+      "run_at": "document_start",
+      "all_frames": true,
+      "world": "MAIN"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["bridge.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    { "resources": ["page-volume.js"], "matches": ["<all_urls>"] }
+  ],
+  "action": {
+    "default_title": "Tab volume",
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+  },
+  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" }
+}

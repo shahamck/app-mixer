@@ -1,0 +1,621 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B92444EE30B47E1900B65D04 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92444ED30B47E1900B65D04 /* AppDelegate.swift */; };
+		B92444F230B47E1900B65D04 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = B92444F030B47E1900B65D04 /* Main.html */; };
+		B92444F430B47E1900B65D04 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = B92444F330B47E1900B65D04 /* Icon.png */; };
+		B92444F630B47E1900B65D04 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = B92444F530B47E1900B65D04 /* Style.css */; };
+		B92444F830B47E1900B65D04 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = B92444F730B47E1900B65D04 /* Script.js */; };
+		B92444FA30B47E1900B65D04 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92444F930B47E1900B65D04 /* ViewController.swift */; };
+		B92444FD30B47E1900B65D04 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B92444FB30B47E1900B65D04 /* Main.storyboard */; };
+		B92444FF30B47E1A00B65D04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B92444FE30B47E1A00B65D04 /* Assets.xcassets */; };
+		B924450630B47E1B00B65D04 /* AppMixer Tabs Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B924450530B47E1B00B65D04 /* AppMixer Tabs Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B924450B30B47E1B00B65D04 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B924450A30B47E1B00B65D04 /* SafariWebExtensionHandler.swift */; };
+		B924451E30B47E1B00B65D04 /* popup.js in Resources */ = {isa = PBXBuildFile; fileRef = B924451730B47E1B00B65D04 /* popup.js */; };
+		B924451F30B47E1B00B65D04 /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = B924451830B47E1B00B65D04 /* background.js */; };
+		B924452030B47E1B00B65D04 /* bridge.js in Resources */ = {isa = PBXBuildFile; fileRef = B924451930B47E1B00B65D04 /* bridge.js */; };
+		B924452130B47E1B00B65D04 /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = B924451A30B47E1B00B65D04 /* popup.html */; };
+		B924452230B47E1B00B65D04 /* icons in Resources */ = {isa = PBXBuildFile; fileRef = B924451B30B47E1B00B65D04 /* icons */; };
+		B924452330B47E1B00B65D04 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = B924451C30B47E1B00B65D04 /* manifest.json */; };
+		B924452430B47E1B00B65D04 /* page-volume.js in Resources */ = {isa = PBXBuildFile; fileRef = B924451D30B47E1B00B65D04 /* page-volume.js */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B924450730B47E1B00B65D04 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B92444E230B47E1900B65D04 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B924450430B47E1B00B65D04;
+			remoteInfo = "AppMixer Tabs Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B924451230B47E1B00B65D04 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B924450630B47E1B00B65D04 /* AppMixer Tabs Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		B92444EA30B47E1900B65D04 /* AppMixer Tabs.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AppMixer Tabs.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B92444ED30B47E1900B65D04 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		B92444F130B47E1900B65D04 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
+		B92444F330B47E1900B65D04 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		B92444F530B47E1900B65D04 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		B92444F730B47E1900B65D04 /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		B92444F930B47E1900B65D04 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B92444FC30B47E1900B65D04 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B92444FE30B47E1A00B65D04 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B924450030B47E1A00B65D04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B924450530B47E1B00B65D04 /* AppMixer Tabs Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "AppMixer Tabs Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B924450A30B47E1B00B65D04 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		B924450C30B47E1B00B65D04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B924451730B47E1B00B65D04 /* popup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = popup.js; path = ../../../Extension/popup.js; sourceTree = "<group>"; };
+		B924451830B47E1B00B65D04 /* background.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = background.js; path = ../../../Extension/background.js; sourceTree = "<group>"; };
+		B924451930B47E1B00B65D04 /* bridge.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = bridge.js; path = ../../../Extension/bridge.js; sourceTree = "<group>"; };
+		B924451A30B47E1B00B65D04 /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = popup.html; path = ../../../Extension/popup.html; sourceTree = "<group>"; };
+		B924451B30B47E1B00B65D04 /* icons */ = {isa = PBXFileReference; lastKnownFileType = folder; name = icons; path = ../../../Extension/icons; sourceTree = "<group>"; };
+		B924451C30B47E1B00B65D04 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = ../../../Extension/manifest.json; sourceTree = "<group>"; };
+		B924451D30B47E1B00B65D04 /* page-volume.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = "page-volume.js"; path = "../../../Extension/page-volume.js"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B92444E730B47E1900B65D04 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B924450230B47E1B00B65D04 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B92444E130B47E1900B65D04 = {
+			isa = PBXGroup;
+			children = (
+				B92444EC30B47E1900B65D04 /* AppMixer Tabs */,
+				B924450930B47E1B00B65D04 /* AppMixer Tabs Extension */,
+				B92444EB30B47E1900B65D04 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B92444EB30B47E1900B65D04 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B92444EA30B47E1900B65D04 /* AppMixer Tabs.app */,
+				B924450530B47E1B00B65D04 /* AppMixer Tabs Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B92444EC30B47E1900B65D04 /* AppMixer Tabs */ = {
+			isa = PBXGroup;
+			children = (
+				B92444ED30B47E1900B65D04 /* AppDelegate.swift */,
+				B92444F930B47E1900B65D04 /* ViewController.swift */,
+				B92444FB30B47E1900B65D04 /* Main.storyboard */,
+				B92444FE30B47E1A00B65D04 /* Assets.xcassets */,
+				B924450030B47E1A00B65D04 /* Info.plist */,
+				B92444EF30B47E1900B65D04 /* Resources */,
+			);
+			path = "AppMixer Tabs";
+			sourceTree = "<group>";
+		};
+		B92444EF30B47E1900B65D04 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B92444F030B47E1900B65D04 /* Main.html */,
+				B92444F330B47E1900B65D04 /* Icon.png */,
+				B92444F530B47E1900B65D04 /* Style.css */,
+				B92444F730B47E1900B65D04 /* Script.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B924450930B47E1B00B65D04 /* AppMixer Tabs Extension */ = {
+			isa = PBXGroup;
+			children = (
+				B924451630B47E1B00B65D04 /* Resources */,
+				B924450A30B47E1B00B65D04 /* SafariWebExtensionHandler.swift */,
+				B924450C30B47E1B00B65D04 /* Info.plist */,
+			);
+			path = "AppMixer Tabs Extension";
+			sourceTree = "<group>";
+		};
+		B924451630B47E1B00B65D04 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B924451730B47E1B00B65D04 /* popup.js */,
+				B924451830B47E1B00B65D04 /* background.js */,
+				B924451930B47E1B00B65D04 /* bridge.js */,
+				B924451A30B47E1B00B65D04 /* popup.html */,
+				B924451B30B47E1B00B65D04 /* icons */,
+				B924451C30B47E1B00B65D04 /* manifest.json */,
+				B924451D30B47E1B00B65D04 /* page-volume.js */,
+			);
+			name = Resources;
+			path = "AppMixer Tabs Extension";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B92444E930B47E1900B65D04 /* AppMixer Tabs */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B924451330B47E1B00B65D04 /* Build configuration list for PBXNativeTarget "AppMixer Tabs" */;
+			buildPhases = (
+				B92444E630B47E1900B65D04 /* Sources */,
+				B92444E730B47E1900B65D04 /* Frameworks */,
+				B92444E830B47E1900B65D04 /* Resources */,
+				B924451230B47E1B00B65D04 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B924450830B47E1B00B65D04 /* PBXTargetDependency */,
+			);
+			name = "AppMixer Tabs";
+			packageProductDependencies = (
+			);
+			productName = "AppMixer Tabs";
+			productReference = B92444EA30B47E1900B65D04 /* AppMixer Tabs.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B924450430B47E1B00B65D04 /* AppMixer Tabs Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B924450F30B47E1B00B65D04 /* Build configuration list for PBXNativeTarget "AppMixer Tabs Extension" */;
+			buildPhases = (
+				B924450130B47E1B00B65D04 /* Sources */,
+				B924450230B47E1B00B65D04 /* Frameworks */,
+				B924450330B47E1B00B65D04 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "AppMixer Tabs Extension";
+			packageProductDependencies = (
+			);
+			productName = "AppMixer Tabs Extension";
+			productReference = B924450530B47E1B00B65D04 /* AppMixer Tabs Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B92444E230B47E1900B65D04 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2660;
+				LastUpgradeCheck = 2660;
+				TargetAttributes = {
+					B92444E930B47E1900B65D04 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					B924450430B47E1B00B65D04 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+				};
+			};
+			buildConfigurationList = B92444E530B47E1900B65D04 /* Build configuration list for PBXProject "AppMixer Tabs" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B92444E130B47E1900B65D04;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = B92444EB30B47E1900B65D04 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B92444E930B47E1900B65D04 /* AppMixer Tabs */,
+				B924450430B47E1B00B65D04 /* AppMixer Tabs Extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B92444E830B47E1900B65D04 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B92444F430B47E1900B65D04 /* Icon.png in Resources */,
+				B92444FD30B47E1900B65D04 /* Main.storyboard in Resources */,
+				B92444F830B47E1900B65D04 /* Script.js in Resources */,
+				B92444F230B47E1900B65D04 /* Main.html in Resources */,
+				B92444FF30B47E1A00B65D04 /* Assets.xcassets in Resources */,
+				B92444F630B47E1900B65D04 /* Style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B924450330B47E1B00B65D04 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B924451F30B47E1B00B65D04 /* background.js in Resources */,
+				B924452130B47E1B00B65D04 /* popup.html in Resources */,
+				B924451E30B47E1B00B65D04 /* popup.js in Resources */,
+				B924452230B47E1B00B65D04 /* icons in Resources */,
+				B924452330B47E1B00B65D04 /* manifest.json in Resources */,
+				B924452030B47E1B00B65D04 /* bridge.js in Resources */,
+				B924452430B47E1B00B65D04 /* page-volume.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B92444E630B47E1900B65D04 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B92444FA30B47E1900B65D04 /* ViewController.swift in Sources */,
+				B92444EE30B47E1900B65D04 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B924450130B47E1B00B65D04 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B924450B30B47E1B00B65D04 /* SafariWebExtensionHandler.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B924450830B47E1B00B65D04 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B924450430B47E1B00B65D04 /* AppMixer Tabs Extension */;
+			targetProxy = B924450730B47E1B00B65D04 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B92444F030B47E1900B65D04 /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B92444F130B47E1900B65D04 /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		B92444FB30B47E1900B65D04 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B92444FC30B47E1900B65D04 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B924450D30B47E1B00B65D04 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B924450E30B47E1B00B65D04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		B924451030B47E1B00B65D04 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AppMixer Tabs Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "AppMixer Tabs Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.b1t.appmixer.tabs.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B924451130B47E1B00B65D04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AppMixer Tabs Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "AppMixer Tabs Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.b1t.appmixer.tabs.Extension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B924451430B47E1B00B65D04 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AppMixer Tabs/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "AppMixer Tabs";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.b1t.appmixer.tabs;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B924451530B47E1B00B65D04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AppMixer Tabs/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "AppMixer Tabs";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = studio.b1t.appmixer.tabs;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B92444E530B47E1900B65D04 /* Build configuration list for PBXProject "AppMixer Tabs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B924450D30B47E1B00B65D04 /* Debug */,
+				B924450E30B47E1B00B65D04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B924450F30B47E1B00B65D04 /* Build configuration list for PBXNativeTarget "AppMixer Tabs Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B924451030B47E1B00B65D04 /* Debug */,
+				B924451130B47E1B00B65D04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B924451330B47E1B00B65D04 /* Build configuration list for PBXNativeTarget "AppMixer Tabs" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B924451430B47E1B00B65D04 /* Debug */,
+				B924451530B47E1B00B65D04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B92444E230B47E1900B65D04 /* Project object */;
+}

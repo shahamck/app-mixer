@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>AppMixer</string>
+    <key>CFBundleDisplayName</key>
+    <string>AppMixer</string>
+    <key>CFBundleIdentifier</key>
+    <string>studio.b1t.appmixer</string>
+    <key>CFBundleExecutable</key>
+    <string>AppMixer</string>
+    <key>CFBundleIconFile</key>
+    <string>AppIcon</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundleVersion</key>
+    <string>1</string>
+    <key>LSMinimumSystemVersion</key>
+    <string>14.2</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>© 2026 B1T Studios</string>
+    <key>LSUIElement</key>
+    <true/>
+    <key>NSAudioCaptureUsageDescription</key>
+    <string>AppMixer reroutes each app's audio so it can set that app's volume and output device. Nothing is recorded or saved.</string>
+</dict>
+</plist>
