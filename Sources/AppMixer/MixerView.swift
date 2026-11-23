@@ -243,6 +243,30 @@ struct BatteryRow: View {
     }
 }
 
+/// The slider thumb shown while dragging: a capsule of Liquid Glass (clear, with a light rim),
+/// like the macOS 26 slider thumb when you grab it. Falls back to a white capsule before macOS 26.
+struct KnobView: View {
+    let width: CGFloat
+    let height: CGFloat
+
+    var body: some View {
+        let shape = Capsule(style: .continuous)
+        if #available(macOS 26.0, *) {
+            shape
+                .fill(Color.white.opacity(0.16))
+                .frame(width: width, height: height)
+                .glassEffect(.clear.interactive(), in: shape)
+                .overlay(shape.strokeBorder(Color.white.opacity(0.55), lineWidth: 0.75))
+                .shadow(color: .black.opacity(0.28), radius: 3, y: 1.5)
+        } else {
+            shape
+                .fill(Color.white)
+                .frame(width: width, height: height)
+                .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
+        }
+    }
+}
+
 /// Thick, knob-less capsule slider like the system volume HUD. Drag or click anywhere on it.
 struct VolumeBar: View {
     let value: Double
@@ -257,7 +281,9 @@ struct VolumeBar: View {
     var body: some View {
         GeometryReader { geo in
             let width = max(geo.size.width, 1)
-            let knob = max(thickness * 2.4, 12)
+            // Apple-style thumb: a short capsule, a bit wider than tall.
+            let knobH = max(thickness * 2.6, 12)
+            let knobW = knobH * 1.55
             ZStack(alignment: .leading) {
                 Capsule().fill(Color.primary.opacity(0.2))
                     .frame(height: thickness)
@@ -265,12 +291,9 @@ struct VolumeBar: View {
                     .fill(Color.primary.opacity(dimmed ? 0.45 : 1))
                     .frame(width: max(thickness, width * value), height: thickness)
                     .shadow(color: .black.opacity(0.18), radius: 1, y: 0.5)
-                Circle()
-                    .fill(Color.white)
-                    .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
-                    .frame(width: knob, height: knob)
-                    .offset(x: min(max(width * value - knob / 2, -knob / 4), width - knob * 3 / 4))
-                    .scaleEffect(dragging ? 1 : 0.4)
+                KnobView(width: knobW, height: knobH)
+                    .offset(x: min(max(width * value - knobW / 2, -knobW / 4), width - knobW * 3 / 4))
+                    .scaleEffect(dragging ? 1 : 0.5)
                     .opacity(dragging ? 1 : 0)
                     .allowsHitTesting(false)
             }
