@@ -17,7 +17,7 @@ Runs on Apple silicon and Intel Macs.
 
 ## Download
 
-Get `AppMixer-1.0.dmg` from [Releases](../../releases), open it and drag AppMixer to Applications.
+Get the latest `AppMixer-<version>.dmg` from [Releases](../../releases), open it and drag AppMixer to Applications.
 
 The app isn't signed with an Apple Developer ID, so the first launch is blocked: open
 **System Settings › Privacy & Security** and click **Open Anyway** next to AppMixer (once).
