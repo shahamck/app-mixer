@@ -1,4 +1,4 @@
-# AppMixer
+# AUDIX
 
 A menu bar mixer for macOS, in Liquid Glass. Click the knob in the menu bar:
 
@@ -20,24 +20,24 @@ Runs on Apple silicon and Intel Macs.
 
 ## Download
 
-Get the latest `AppMixer-<version>.dmg` from [Releases](../../releases), open it and drag AppMixer to Applications.
+Get the latest `AUDIX-<version>.dmg` from [Releases](../../releases), open it and drag AUDIX to Applications.
 
 The app isn't signed with an Apple Developer ID, so the first launch is blocked: open
-**System Settings › Privacy & Security** and click **Open Anyway** next to AppMixer (once).
+**System Settings › Privacy & Security** and click **Open Anyway** next to AUDIX (once).
 The first time you change an app's volume, allow audio capture when macOS asks.
 
 ## Build from source
 
 ```bash
-./build.sh          # universal app in build/AppMixer.app
-./build.sh --dmg    # plus dist/AppMixer-<version>.dmg
-open build/AppMixer.app
+./build.sh          # universal app in build/AUDIX.app
+./build.sh --dmg    # plus dist/AUDIX-<version>.dmg
+open build/AUDIX.app
 ```
 
 ## How it works
 
 - Apps at 100% on the system output are left alone.
-- Change an app's volume, mute it, or pick another output and AppMixer creates a **process tap** for that app
+- Change an app's volume, mute it, or pick another output and AUDIX creates a **process tap** for that app
   (which silences its normal output), plus a private aggregate device that plays the tapped audio
   on the chosen output at the chosen gain.
 - Helper processes (Chrome Helper, Safari's WebKit GPU process) are grouped under their app.
@@ -71,11 +71,11 @@ sample rate.
 
 ## Per-tab volume (browsers)
 
-macOS hands each browser's audio to AppMixer as one stream, so tabs can't be separated at the system level.
-The **AppMixer Tabs** extension (in `Extension/`) scales each tab's audio inside the page instead
-(`<audio>`, `<video>` and Web Audio), and reports tabs to AppMixer over `127.0.0.1:47300`.
+macOS hands each browser's audio to AUDIX as one stream, so tabs can't be separated at the system level.
+The **AUDIX Tabs** extension (in `Extension/`) scales each tab's audio inside the page instead
+(`<audio>`, `<video>` and Web Audio), and reports tabs to AUDIX over `127.0.0.1:47300`.
 Tabs then appear indented under their browser in the menu bar panel. The extension's toolbar
-popup gives the same sliders without AppMixer.
+popup gives the same sliders without AUDIX.
 
 **Chrome / Brave / Edge:** open `chrome://extensions` (or `brave://extensions`), turn on Developer mode,
 click "Load unpacked" and choose the `Extension` folder.
@@ -83,7 +83,7 @@ click "Load unpacked" and choose the `Extension` folder.
 **Safari:** the extension is unsigned (no Apple Developer team set up), so:
 1. Safari › Settings › Advanced › turn on "Show features for web developers".
 2. Safari › Settings › Developer › turn on "Allow unsigned extensions" (resets each time Safari quits).
-3. Open `build/AppMixer Tabs.app` once, then enable AppMixer Tabs in Safari › Settings › Extensions
+3. Open `build/AppMixer Tabs.app` once, then enable AUDIX Tabs in Safari › Settings › Extensions
    and allow it on all websites.
 
 To rebuild the Safari app after changing `Extension/`, regenerate it with

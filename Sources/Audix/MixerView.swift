@@ -74,7 +74,7 @@ struct MixerView: View {
             Button("Reset all apps") { model.resetAll() }
                 .disabled(model.settings.isEmpty)
             Divider()
-            Button("Quit AppMixer") { quit() }
+            Button("Quit AUDIX") { quit() }
         }
     }
 
@@ -595,7 +595,7 @@ struct AppRow: View {
     }
 }
 
-/// Browser tabs (from the AppMixer Tabs extension), nested one level below their browser.
+/// Browser tabs (from the AUDIX Tabs extension), nested one level below their browser.
 struct TabRows: View {
     let browser: String
     let parentIsLast: Bool

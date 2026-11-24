@@ -1,4 +1,4 @@
-// Keeps each tab's volume, pushes it into the tab, and syncs with the AppMixer menu bar app
+// Keeps each tab's volume, pushes it into the tab, and syncs with the AUDIX menu bar app
 // over http://127.0.0.1:47300 (if it's running).
 const api = globalThis.browser ?? globalThis.chrome;
 
@@ -72,7 +72,7 @@ async function sync() {
     const { commands = {} } = await res.json();
     for (const [id, cmd] of Object.entries(commands)) await setTab(id, cmd);
   } catch (_) {
-    // AppMixer not running — the popup still works on its own.
+    // AUDIX not running — the popup still works on its own.
   } finally {
     syncing = false;
   }

@@ -21,7 +21,7 @@ private struct SyncRequest: Decodable {
     let tabs: [BrowserTab]
 }
 
-/// Tiny HTTP server on 127.0.0.1:47300. The AppMixer Tabs browser extension POSTs its tab list
+/// Tiny HTTP server on 127.0.0.1:47300. The AUDIX Tabs browser extension POSTs its tab list
 /// to /sync about once a second and gets back any volume changes made in the menu bar.
 @MainActor
 final class TabBridge: ObservableObject {

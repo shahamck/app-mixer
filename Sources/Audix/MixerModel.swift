@@ -48,7 +48,7 @@ final class MixerModel: ObservableObject {
     private let forceMic = CommandLine.arguments.contains("--preview-mic")
     /// `--preview-quiet`: pretend nothing is playing, to check the quiet card.
     let forceQuiet = CommandLine.arguments.contains("--preview-quiet")
-    /// Per-tab volume, reported by the AppMixer Tabs browser extension.
+    /// Per-tab volume, reported by the AUDIX Tabs browser extension.
     let tabBridge = TabBridge()
     /// Battery levels of connected Bluetooth devices (AirPods left/right/case…).
     let batteries = BluetoothBatteries()

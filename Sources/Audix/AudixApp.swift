@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 @main
-struct AppMixerApp: App {
+struct AudixApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
     // The menu bar icon and glass panel are AppKit (see StatusPanel.swift); no SwiftUI windows.
@@ -39,7 +39,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-/// `AppMixer --devicetest <logPath>`: nudges default output/input volume by 10%, reads it back, restores it.
+/// `AUDIX --devicetest <logPath>`: nudges default output/input volume by 10%, reads it back, restores it.
 enum DeviceTest {
     static func run(logPath: String) {
         var lines: [String] = []
@@ -65,7 +65,7 @@ enum DeviceTest {
     }
 }
 
-/// `AppMixer --selftest <bundleID> <volume> <seconds> <logPath>`
+/// `AUDIX --selftest <bundleID> <volume> <seconds> <logPath>`
 /// Taps one app at a fixed volume and logs input/output peaks, then quits.
 enum SelfTest {
     static func run(bundleID: String, volume: Float, seconds: Double, logPath: String) {

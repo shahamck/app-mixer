@@ -76,7 +76,7 @@ final class AppTap {
         // 1. Tap
         let description = CATapDescription(stereoMixdownOfProcesses: processObjects)
         description.uuid = UUID()
-        description.name = "AppMixer"
+        description.name = "AUDIX"
         description.isPrivate = true
         description.muteBehavior = .mutedWhenTapped
         try caCheck(AudioHardwareCreateProcessTap(description, &tapID), "Create process tap")
@@ -92,7 +92,7 @@ final class AppTap {
             [kAudioSubDeviceUIDKey: uid, kAudioSubDeviceDriftCompensationKey: index > 0]
         }
         let aggregate: [String: Any] = [
-            kAudioAggregateDeviceNameKey: "AppMixer",
+            kAudioAggregateDeviceNameKey: "AUDIX",
             kAudioAggregateDeviceUIDKey: aggregateUIDPrefix + UUID().uuidString,
             kAudioAggregateDeviceMainSubDeviceKey: outputUIDs[0],
             kAudioAggregateDeviceIsPrivateKey: true,

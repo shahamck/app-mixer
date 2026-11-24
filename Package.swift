@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "AppMixer",
+    name: "Audix",
     platforms: [.macOS("14.2")],
     targets: [
         .executableTarget(
-            name: "AppMixer",
-            path: "Sources/AppMixer"
+            name: "Audix",
+            path: "Sources/Audix"
         )
     ]
 )

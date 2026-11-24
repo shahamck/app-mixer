@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "AppMixer Tabs",
+  "name": "AUDIX Tabs",
   "version": "0.1",
-  "description": "Per-tab volume and mute. Works on its own or with the AppMixer menu bar app.",
+  "description": "Per-tab volume and mute. Works on its own or with the AUDIX menu bar app.",
   "permissions": ["tabs", "storage"],
   "host_permissions": ["<all_urls>"],
   "background": { "service_worker": "background.js" },

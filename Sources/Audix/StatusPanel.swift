@@ -43,7 +43,7 @@ final class StatusPanelController: NSObject {
         panel.contentView = hosting
 
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "dial.medium.fill", accessibilityDescription: "AppMixer")
+            button.image = NSImage(systemSymbolName: "dial.medium.fill", accessibilityDescription: "AUDIX")
             button.target = self
             button.action = #selector(toggle)
         }
@@ -164,7 +164,7 @@ final class GlassPanel: NSPanel {
         isFloatingPanel = true
         hidesOnDeactivate = false
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient]
-        title = "AppMixer"
+        title = "AUDIX"
     }
 
     override var canBecomeKey: Bool { true }
