@@ -97,8 +97,14 @@ enum SelfTest {
         }
 
         do {
-            let tap = try AppTap(processObjects: targets, outputUID: output.uid, gain: volume)
-            log("tap started on \(output.name) at gain \(volume)")
+            // `-selftestOutputs "Name A,Name B"`: play on several devices at once (multi-output).
+            let names = (UserDefaults.standard.string(forKey: "selftestOutputs") ?? "")
+                .split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+            let chosen = names.compactMap { name in devices.first { $0.name == name } }
+            let outputs = chosen.isEmpty ? [output] : chosen
+            let tap = try AppTap(processObjects: targets, outputUIDs: outputs.map(\.uid), gain: volume)
+            log("tap started on \(outputs.map(\.name).joined(separator: " + ")) at gain \(volume)")
+            log(tap.debugDescription)
             var ticks = 0
             Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
                 let p = tap.takePeaks()

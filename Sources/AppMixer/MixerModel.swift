@@ -60,6 +60,25 @@ final class MixerModel: ObservableObject {
         UserDefaults.standard.set(show, forKey: "showBatteries")
         if show { batteries.refresh() }
     }
+    // MARK: Multi-output state
+
+    /// Real output devices connected right now (no virtual/aggregate ones), system output first.
+    @Published private(set) var connectedOutputs: [AudioDevice] = []
+    /// Level and mute of each connected output, by UID (for the per-device sections in multi-output mode).
+    @Published private(set) var outputStates: [String: DeviceState] = [:]
+    /// The multi-output switch. Only takes effect while two or more outputs are connected.
+    @Published private(set) var multiOutput = UserDefaults.standard.bool(forKey: "multiOutput")
+    /// Multi-output: for each app, the devices it's muted on. Everything plays everywhere unless listed here.
+    @Published private(set) var deviceMutes: [String: Set<String>] = {
+        guard let data = UserDefaults.standard.data(forKey: "deviceMutes"),
+              let saved = try? JSONDecoder().decode([String: [String]].self, from: data) else { return [:] }
+        return saved.mapValues(Set.init)
+    }()
+
+    /// The switch is offered only when there's more than one output to play on.
+    var multiOutputAvailable: Bool { connectedOutputs.count >= 2 }
+    var multiOutputActive: Bool { multiOutput && multiOutputAvailable }
+
     /// Devices without a hardware mute are muted by zeroing their volume; this is the level to restore.
     private var softMuteRestore: [AudioObjectID: Float] = [:]
     @Published private(set) var settings: [String: AppSetting] = [:]
@@ -85,6 +104,45 @@ final class MixerModel: ObservableObject {
         }
     }
 
+    // MARK: Multi-output actions
+
+    func setMultiOutput(_ on: Bool) {
+        multiOutput = on
+        UserDefaults.standard.set(on, forKey: "multiOutput")
+        failedConfigs = []
+        for app in allApps.values { reconcile(app) }
+    }
+
+    func isMuted(_ app: AudioApp, on device: AudioDevice) -> Bool {
+        deviceMutes[app.id]?.contains(device.uid) ?? false
+    }
+
+    /// Multi-output: play / stop playing this app on one device.
+    func toggle(_ app: AudioApp, on device: AudioDevice) {
+        var muted = deviceMutes[app.id] ?? []
+        if muted.contains(device.uid) { muted.remove(device.uid) } else { muted.insert(device.uid) }
+        deviceMutes[app.id] = muted.isEmpty ? nil : muted
+        if let data = try? JSONEncoder().encode(deviceMutes.mapValues { Array($0) }) {
+            UserDefaults.standard.set(data, forKey: "deviceMutes")
+        }
+        failedConfigs = failedConfigs.filter { !$0.hasPrefix(app.id + "|") }
+        reconcile(app)
+    }
+
+    func state(of device: AudioDevice) -> DeviceState {
+        outputStates[device.uid] ?? DeviceState(device: device)
+    }
+
+    func setVolume(_ volume: Float, of device: AudioDevice) {
+        applyVolume(volume, to: device.id, input: false)
+        updateDeviceStates()
+    }
+
+    func toggleMute(of device: AudioDevice) {
+        applyMuteToggle(to: device.id, input: false)
+        updateDeviceStates()
+    }
+
     // MARK: Device actions
 
     func deviceState(input isInput: Bool) -> DeviceState { isInput ? input : output }
@@ -96,25 +154,33 @@ final class MixerModel: ObservableObject {
 
     func setDeviceVolume(_ volume: Float, input isInput: Bool) {
         guard let device = deviceState(input: isInput).device else { return }
-        softMuteRestore[device.id] = nil
-        if volume > 0, CA.isMuted(device.id, input: isInput) == true {
-            CA.setMuted(device.id, input: isInput, false)
-        }
-        CA.setVolume(device.id, input: isInput, volume)
+        applyVolume(volume, to: device.id, input: isInput)
         updateDeviceStates()
     }
 
     func toggleDeviceMute(input isInput: Bool) {
         guard let device = deviceState(input: isInput).device else { return }
-        if let hardwareMuted = CA.isMuted(device.id, input: isInput) {
-            CA.setMuted(device.id, input: isInput, !hardwareMuted)
-        } else if let restore = softMuteRestore.removeValue(forKey: device.id) {
-            CA.setVolume(device.id, input: isInput, restore)
-        } else if let current = CA.volume(device.id, input: isInput) {
-            softMuteRestore[device.id] = current
-            CA.setVolume(device.id, input: isInput, 0)
-        }
+        applyMuteToggle(to: device.id, input: isInput)
         updateDeviceStates()
+    }
+
+    private func applyVolume(_ volume: Float, to device: AudioObjectID, input isInput: Bool) {
+        softMuteRestore[device] = nil
+        if volume > 0, CA.isMuted(device, input: isInput) == true {
+            CA.setMuted(device, input: isInput, false)
+        }
+        CA.setVolume(device, input: isInput, volume)
+    }
+
+    private func applyMuteToggle(to device: AudioObjectID, input isInput: Bool) {
+        if let hardwareMuted = CA.isMuted(device, input: isInput) {
+            CA.setMuted(device, input: isInput, !hardwareMuted)
+        } else if let restore = softMuteRestore.removeValue(forKey: device) {
+            CA.setVolume(device, input: isInput, restore)
+        } else if let current = CA.volume(device, input: isInput) {
+            softMuteRestore[device] = current
+            CA.setVolume(device, input: isInput, 0)
+        }
     }
 
     /// Put back any volumes we zeroed to fake a mute (called on quit).
@@ -130,6 +196,9 @@ final class MixerModel: ObservableObject {
         let newInput = readState(inputDevices.first { $0.id == CA.defaultDeviceID(input: true) }, input: true)
         if newOutput != output { output = newOutput }
         if newInput != input { input = newInput }
+        var states: [String: DeviceState] = [:]
+        for device in connectedOutputs { states[device.uid] = readState(device, input: false) }
+        if states != outputStates { outputStates = states }
     }
 
     private func readState(_ device: AudioDevice?, input isInput: Bool) -> DeviceState {
@@ -199,6 +268,9 @@ final class MixerModel: ObservableObject {
         let defaultID = CA.defaultOutputDeviceID()
         let newDefault = devices.first { $0.id == defaultID }
         if newDefault != defaultOutput { defaultOutput = newDefault }
+        let physical = devices.filter { CA.isPhysical($0.id) }
+            .sorted { ($0.id == defaultID ? 0 : 1, $0.name) < ($1.id == defaultID ? 0 : 1, $1.name) }
+        if physical != connectedOutputs { connectedOutputs = physical }
         updateDeviceStates()
 
         // Group Core Audio process objects by the app the user sees.
@@ -256,6 +328,24 @@ final class MixerModel: ObservableObject {
 
     private func reconcile(_ app: AudioApp) {
         let s = setting(for: app.id)
+        let gain = s.muted ? 0 : s.volume * s.volume // squared: slider feels linear to the ear
+
+        // Multi-output: every app that's playing goes to all connected outputs, minus the ones it's muted on.
+        // Idle apps are left alone (no point keeping several devices busy for them).
+        if multiOutputActive, app.isUserApp {
+            let recent = app.isPlaying || (lastPlayed[app.id].map { Date().timeIntervalSince($0) < 30 } ?? false)
+            guard recent, !app.processObjects.isEmpty else { taps[app.id] = nil; return }
+            let muted = deviceMutes[app.id] ?? []
+            let targets = connectedOutputs.map(\.uid).filter { !muted.contains($0) }
+            if targets.isEmpty {
+                // Muted everywhere: keep it tapped (that's what silences it), at zero gain.
+                ensureTap(app, outputs: [connectedOutputs[0].uid], gain: 0)
+            } else {
+                ensureTap(app, outputs: targets, gain: gain)
+            }
+            return
+        }
+
         let pinnedUID = s.outputUID.flatMap { uid in devices.first { $0.uid == uid }?.uid }
         let defaultUID = defaultOutput?.uid
         let targetUID = pinnedUID ?? defaultUID
@@ -265,19 +355,21 @@ final class MixerModel: ObservableObject {
             taps[app.id] = nil
             return
         }
+        ensureTap(app, outputs: [targetUID], gain: gain)
+    }
 
-        let gain = s.muted ? 0 : s.volume * s.volume // squared: slider feels linear to the ear
-        if let tap = taps[app.id], tap.outputUID == targetUID, tap.processObjects == Set(app.processObjects) {
+    private func ensureTap(_ app: AudioApp, outputs: [String], gain: Float) {
+        if let tap = taps[app.id], tap.outputUIDs == outputs, tap.processObjects == Set(app.processObjects) {
             tap.gain = gain
             return
         }
 
-        let config = "\(app.id)|\(targetUID)|\(app.processObjects.sorted())"
+        let config = "\(app.id)|\(outputs.joined(separator: ","))|\(app.processObjects.sorted())"
         guard !failedConfigs.contains(config) else { return }
 
         taps[app.id] = nil
         do {
-            taps[app.id] = try AppTap(processObjects: app.processObjects, outputUID: targetUID, gain: gain)
+            taps[app.id] = try AppTap(processObjects: app.processObjects, outputUIDs: outputs, gain: gain)
             errorMessage = nil
         } catch {
             failedConfigs.insert(config)

@@ -104,6 +104,15 @@ enum CA {
         }
     }
 
+    /// A real, connected device (speakers, headphones, USB, HDMI, AirPlay…), not a virtual or aggregate one.
+    static func isPhysical(_ device: AudioObjectID) -> Bool {
+        let transport: UInt32 = scalar(device, kAudioDevicePropertyTransportType, default: 0)
+        let excluded: Set<UInt32> = [0, kAudioDeviceTransportTypeVirtual, kAudioDeviceTransportTypeAggregate,
+                                     kAudioDeviceTransportTypeAutoAggregate]
+        let alive: UInt32 = scalar(device, kAudioDevicePropertyDeviceIsAlive, default: 1)
+        return !excluded.contains(transport) && alive != 0
+    }
+
     static func defaultOutputDeviceID() -> AudioObjectID { defaultDeviceID(input: false) }
 
     static func defaultDeviceID(input: Bool) -> AudioObjectID {

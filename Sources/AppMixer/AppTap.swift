@@ -11,20 +11,31 @@ private struct IOState {
 
 /// Takes over one app's audio:
 /// 1. a process tap captures the app's processes and mutes their normal output,
-/// 2. a private aggregate device (tap + chosen output device) runs an IOProc,
-/// 3. the IOProc copies tap → output, scaled by the gain.
+/// 2. a private aggregate device (tap + one or more output devices) runs an IOProc,
+/// 3. the IOProc copies tap → every output device, scaled by the gain.
 final class AppTap {
     let processObjects: Set<AudioObjectID>
-    let outputUID: String
+    /// Output devices this app plays on, in order; the first is the clock master.
+    let outputUIDs: [String]
 
     private var tapID = AudioObjectID(kAudioObjectUnknown)
     private var aggregateID = AudioObjectID(kAudioObjectUnknown)
     private var procID: AudioDeviceIOProcID?
     private let state: UnsafeMutablePointer<IOState>
+    /// Per output buffer of the aggregate: channels before it within its own device, and that device's channel count.
+    /// Lets each device get its own left/right, even when several devices share one aggregate.
+    private var channelMap: UnsafeMutablePointer<Int32>?
+    private var channelMapCount = 0
 
     var gain: Float {
         get { state.pointee.targetGain }
         set { state.pointee.targetGain = max(0, min(newValue, 2)) }
+    }
+
+    /// For the self-test: how the aggregate's output buffers line up with the per-device channel map.
+    var debugDescription: String {
+        let streams = CA.objectIDs(aggregateID, kAudioDevicePropertyStreams, kAudioObjectPropertyScopeOutput).count
+        return "outputs \(outputUIDs.count), aggregate output streams \(streams), channel map entries \(channelMapCount)"
     }
 
     /// Peak levels since the last call (for debugging / self-test).
@@ -35,9 +46,14 @@ final class AppTap {
         return p
     }
 
-    init(processObjects: [AudioObjectID], outputUID: String, gain: Float) throws {
+    convenience init(processObjects: [AudioObjectID], outputUID: String, gain: Float) throws {
+        try self.init(processObjects: processObjects, outputUIDs: [outputUID], gain: gain)
+    }
+
+    init(processObjects: [AudioObjectID], outputUIDs: [String], gain: Float) throws {
+        precondition(!outputUIDs.isEmpty)
         self.processObjects = Set(processObjects)
-        self.outputUID = outputUID
+        self.outputUIDs = outputUIDs
         state = .allocate(capacity: 1)
         state.initialize(to: IOState(targetGain: gain, currentGain: gain))
 
@@ -53,6 +69,7 @@ final class AppTap {
     deinit {
         teardown()
         state.deallocate()
+        channelMap?.deallocate()
     }
 
     private func start(processObjects: [AudioObjectID]) throws {
@@ -69,15 +86,19 @@ final class AppTap {
         let nonInterleaved = format.mFormatFlags & kAudioFormatFlagIsNonInterleaved != 0
         let tapBufferCount = nonInterleaved ? max(1, Int(format.mChannelsPerFrame)) : 1
 
-        // 2. Aggregate device: output device as clock master, tap as input.
+        // 2. Aggregate device: output devices (first one is the clock master; the others are kept in step
+        //    with drift compensation), tap as input.
+        let subDevices: [[String: Any]] = outputUIDs.enumerated().map { index, uid in
+            [kAudioSubDeviceUIDKey: uid, kAudioSubDeviceDriftCompensationKey: index > 0]
+        }
         let aggregate: [String: Any] = [
             kAudioAggregateDeviceNameKey: "AppMixer",
             kAudioAggregateDeviceUIDKey: aggregateUIDPrefix + UUID().uuidString,
-            kAudioAggregateDeviceMainSubDeviceKey: outputUID,
+            kAudioAggregateDeviceMainSubDeviceKey: outputUIDs[0],
             kAudioAggregateDeviceIsPrivateKey: true,
             kAudioAggregateDeviceIsStackedKey: false,
             kAudioAggregateDeviceTapAutoStartKey: true,
-            kAudioAggregateDeviceSubDeviceListKey: [[kAudioSubDeviceUIDKey: outputUID]],
+            kAudioAggregateDeviceSubDeviceListKey: subDevices,
             kAudioAggregateDeviceTapListKey: [[
                 kAudioSubTapDriftCompensationKey: true,
                 kAudioSubTapUIDKey: description.uuid.uuidString,
@@ -86,10 +107,14 @@ final class AppTap {
         try caCheck(AudioHardwareCreateAggregateDevice(aggregate as CFDictionary, &aggregateID),
                     "Create aggregate device")
 
+        buildChannelMap()
+
         // 3. IOProc
         let state = self.state
+        let map = channelMap, mapCount = channelMapCount
         try caCheck(AudioDeviceCreateIOProcIDWithBlock(&procID, aggregateID, nil) { _, inData, _, outData, _ in
-            AppTap.render(input: inData, output: outData, tapBufferCount: tapBufferCount, state: state)
+            AppTap.render(input: inData, output: outData, tapBufferCount: tapBufferCount,
+                          channelMap: map, channelMapCount: mapCount, state: state)
         }, "Create IOProc")
 
         // The output device may have its own inputs (e.g. AirPods mic). We only want the tap,
@@ -99,10 +124,38 @@ final class AppTap {
         try caCheck(AudioDeviceStart(aggregateID, procID), "Start audio")
     }
 
+    /// The aggregate's output buffers are the sub-devices' output streams, in sub-device order.
+    private func buildChannelMap() {
+        let devices = CA.outputDevices()
+        var entries: [Int32] = []
+        for uid in outputUIDs {
+            guard let device = devices.first(where: { $0.uid == uid }) else { continue }
+            let streams = CA.objectIDs(device.id, kAudioDevicePropertyStreams, kAudioObjectPropertyScopeOutput)
+            let channels = streams.map { stream -> Int in
+                let asbd: AudioStreamBasicDescription = CA.scalar(stream, kAudioStreamPropertyVirtualFormat,
+                                                                  default: AudioStreamBasicDescription())
+                return max(1, Int(asbd.mChannelsPerFrame))
+            }
+            let total = channels.reduce(0, +)
+            var before = 0
+            for count in channels {
+                entries += [Int32(before), Int32(total)]
+                before += count
+            }
+        }
+        channelMapCount = entries.count / 2
+        let map = UnsafeMutablePointer<Int32>.allocate(capacity: max(entries.count, 1))
+        map.initialize(from: entries, count: entries.count)
+        channelMap = map
+    }
+
     private func disableSubDeviceInputs() {
-        guard let procID,
-              let device = CA.outputDevices().first(where: { $0.uid == outputUID }) else { return }
-        let deviceInputs = CA.objectIDs(device.id, kAudioDevicePropertyStreams, kAudioObjectPropertyScopeInput).count
+        guard let procID else { return }
+        let devices = CA.outputDevices()
+        let deviceInputs = outputUIDs.reduce(0) { sum, uid in
+            guard let device = devices.first(where: { $0.uid == uid }) else { return sum }
+            return sum + CA.objectIDs(device.id, kAudioDevicePropertyStreams, kAudioObjectPropertyScopeInput).count
+        }
         guard deviceInputs > 0 else { return }
 
         var addr = CA.address(kAudioDevicePropertyIOProcStreamUsage, kAudioObjectPropertyScopeInput)
@@ -144,6 +197,8 @@ final class AppTap {
     private static func render(input: UnsafePointer<AudioBufferList>,
                                output: UnsafeMutablePointer<AudioBufferList>,
                                tapBufferCount: Int,
+                               channelMap: UnsafeMutablePointer<Int32>?,
+                               channelMapCount: Int,
                                state: UnsafeMutablePointer<IOState>) {
         let ins = UnsafeMutableAudioBufferListPointer(UnsafeMutablePointer(mutating: input))
         let outs = UnsafeMutableAudioBufferListPointer(output)
@@ -178,26 +233,27 @@ final class AppTap {
 
         let start = state.pointee.currentGain
         let target = state.pointee.targetGain
-        let totalOutChannels = outs.reduce(0) { $0 + Int($1.mNumberChannels) }
+        // Use the per-device channel map when it matches the buffers; otherwise treat each buffer as its own device.
+        let mapped = channelMap != nil && channelMapCount == outs.count
         var peakIn = state.pointee.peakIn
         var peakOut = state.pointee.peakOut
 
-        var channelBase = 0
-        for buffer in outs {
+        for (index, buffer) in outs.enumerated() {
             let channels = Int(buffer.mNumberChannels)
-            defer { channelBase += channels }
             guard let dst = buffer.mData?.assumingMemoryBound(to: Float.self), channels > 0 else { continue }
+            let before = mapped ? Int(channelMap![index * 2]) : 0
+            let deviceChannels = mapped ? Int(channelMap![index * 2 + 1]) : channels
             let n = min(frames, Int(buffer.mDataByteSize) / (4 * channels))
             guard n > 0 else { continue }
             let step = (target - start) / Float(n)
             for c in 0..<channels {
-                let globalChannel = channelBase + c
-                guard globalChannel < 2 else { continue } // extra channels stay silent
+                let deviceChannel = before + c
+                guard deviceChannel < 2 else { continue } // each device: left, right; extra channels stay silent
                 for f in 0..<n {
                     let l = left[f * stride], r = right[f * stride]
                     let sample: Float
-                    if totalOutChannels == 1 { sample = (l + r) * 0.5 }
-                    else { sample = globalChannel == 0 ? l : r }
+                    if deviceChannels == 1 { sample = (l + r) * 0.5 }
+                    else { sample = deviceChannel == 0 ? l : r }
                     let g = start + step * Float(f)
                     let out = sample * g
                     dst[f * channels + c] = out

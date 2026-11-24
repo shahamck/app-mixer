@@ -10,19 +10,24 @@ struct MixerView: View {
         let apps = model.forceQuiet ? [] : model.visibleApps
         let micOn = model.micInUse && !model.forceQuiet
 
-        VStack(alignment: .leading, spacing: 0) {
-            DeviceSection(isInput: false)
+        let multi = model.multiOutputActive
 
-            if !apps.isEmpty {
-                VStack(spacing: 0) {
-                    ForEach(Array(apps.enumerated()), id: \.element.id) { index, app in
-                        let last = index == apps.count - 1
-                        AppRow(app: app, isLast: last)
-                        TabRows(browser: app.id, parentIsLast: last, bridge: model.tabBridge)
+        VStack(alignment: .leading, spacing: 0) {
+            if multi {
+                // Multi-output: one section per connected output, each with the apps playing and an
+                // on/off per app for that device.
+                ForEach(Array(model.connectedOutputs.enumerated()), id: \.element.uid) { index, device in
+                    OutputDeviceSection(device: device)
+                        .padding(.top, index == 0 ? 0 : 12)
+                    if !apps.isEmpty {
+                        appTree(apps, device: device)
                     }
                 }
-                .padding(.top, 2)
-                .transition(.opacity)
+            } else {
+                DeviceSection(isInput: false)
+                if !apps.isEmpty {
+                    appTree(apps, device: nil)
+                }
             }
 
             if micOn {
@@ -39,6 +44,13 @@ struct MixerView: View {
                     .padding(.top, 10)
                     .fixedSize(horizontal: false, vertical: true)
             }
+
+            // Only offered when there's more than one output connected.
+            if model.multiOutputAvailable {
+                MultiOutputToggle()
+                    .padding(.top, 12)
+                    .transition(.opacity)
+            }
         }
         .padding(.vertical, 12)
         .frame(width: 296, alignment: .leading)
@@ -53,6 +65,8 @@ struct MixerView: View {
         .shadow(color: .black.opacity(0.12), radius: 10, y: 4) // follows the rounded glass
         .animation(.easeInOut(duration: 0.2), value: micOn)
         .animation(.easeInOut(duration: 0.2), value: apps.map(\.id))
+        .animation(.easeInOut(duration: 0.2), value: multi)
+        .animation(.easeInOut(duration: 0.2), value: model.connectedOutputs.map(\.uid))
         .contextMenu {
             Toggle("Show battery levels", isOn: Binding(get: { model.showBatteries },
                                                         set: { model.setShowBatteries($0) }))
@@ -64,9 +78,122 @@ struct MixerView: View {
         }
     }
 
+    /// Apps playing, hanging off the speaker icon. With a `device`, each row's speaker button turns that
+    /// app on/off for that device (multi-output); without one, it mutes the app.
+    private func appTree(_ apps: [AudioApp], device: AudioDevice?) -> some View {
+        VStack(spacing: 0) {
+            ForEach(Array(apps.enumerated()), id: \.element.id) { index, app in
+                let last = index == apps.count - 1
+                AppRow(app: app, isLast: last, device: device)
+                if device == nil {
+                    TabRows(browser: app.id, parentIsLast: last, bridge: model.tabBridge)
+                }
+            }
+        }
+        .padding(.top, 2)
+        .transition(.opacity)
+    }
+
     private func quit() {
         model.restoreSoftMutes()
         NSApp.terminate(nil)
+    }
+}
+
+/// The multi-output switch: play on every connected output at once.
+struct MultiOutputToggle: View {
+    @EnvironmentObject var model: MixerModel
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "hifispeaker.2.fill")
+                .font(.system(size: 12))
+                .frame(width: 16)
+                .foregroundStyle(model.multiOutputActive ? Color.accentColor : Color.secondary)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Multi-output")
+                    .font(.system(size: 12, weight: .semibold))
+                Text(model.multiOutputActive
+                     ? "Playing on \(model.connectedOutputs.count) devices"
+                     : "Play on all \(model.connectedOutputs.count) outputs at once")
+                    .font(.system(size: 10))
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Toggle("Multi-output", isOn: Binding(get: { model.multiOutput }, set: { model.setMultiOutput($0) }))
+                .toggleStyle(.switch)
+                .controlSize(.mini)
+                .labelsHidden()
+        }
+        .padding(.horizontal, 14)
+    }
+}
+
+/// One connected output in multi-output mode: its name (and battery), volume and mute.
+struct OutputDeviceSection: View {
+    let device: AudioDevice
+    @EnvironmentObject var model: MixerModel
+
+    var body: some View {
+        let state = model.state(of: device)
+
+        VStack(alignment: .leading, spacing: 7) {
+            HStack(spacing: 6) {
+                Text(device.name)
+                    .font(.system(size: 12, weight: .semibold))
+                    .lineLimit(1)
+                if device.id == model.defaultOutput?.id {
+                    Text("System")
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 1)
+                        .background(Color.primary.opacity(0.1), in: Capsule())
+                        .help("Alerts and apps that aren't playing go here")
+                }
+            }
+
+            if model.showBatteries {
+                BatteryRow(batteries: model.batteries, deviceName: device.name)
+            }
+
+            HStack(spacing: 10) {
+                Button {
+                    model.toggleMute(of: device)
+                } label: {
+                    Image(systemName: state.muted ? "speaker.slash.fill" : "speaker.fill")
+                        .frame(width: 16, height: 16)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(state.muted ? Color.red : Color.primary)
+                .disabled(!state.canMute)
+
+                if let volume = state.volume {
+                    VolumeBar(value: Double(volume), dimmed: state.muted, label: "\(device.name) volume") {
+                        model.setVolume(Float($0), of: device)
+                    }
+                } else {
+                    Text("Fixed volume")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                }
+
+                Button {
+                    model.toggleMute(of: device)
+                } label: {
+                    Image(systemName: "speaker.wave.3.fill")
+                        .frame(width: 20, height: 16, alignment: .trailing)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
+                .disabled(!state.canMute)
+            }
+            .font(.system(size: 12))
+        }
+        .padding(.horizontal, 14)
     }
 }
 
@@ -375,13 +502,17 @@ struct TreeGuide: View {
 }
 
 /// An app making sound, hanging off the speaker icon. Right-click to send it to another device.
+/// In multi-output mode (`device` set) the speaker button plays / stops this app on that device.
 struct AppRow: View {
     let app: AudioApp
     let isLast: Bool
+    var device: AudioDevice? = nil
     @EnvironmentObject var model: MixerModel
 
     var body: some View {
         let setting = model.setting(for: app.id)
+        let offHere = device.map { model.isMuted(app, on: $0) } ?? false
+        let silent = setting.muted || offHere
 
         HStack(spacing: 7) {
             TreeGuide(kind: .branch(last: isLast))
@@ -402,7 +533,7 @@ struct AppRow: View {
                     .font(.system(size: 11))
                     .lineLimit(1)
                     .truncationMode(.tail)
-                if setting.outputUID != nil {
+                if device == nil, setting.outputUID != nil {
                     Text("→ " + model.outputName(for: app))
                         .font(.system(size: 9))
                         .foregroundStyle(.secondary)
@@ -412,7 +543,7 @@ struct AppRow: View {
             .frame(width: 68, alignment: .leading)
             .help(app.name)
 
-            VolumeBar(value: Double(setting.volume), dimmed: setting.muted, thickness: 4, label: "\(app.name) volume") {
+            VolumeBar(value: Double(setting.volume), dimmed: silent, thickness: 4, label: "\(app.name) volume") {
                 model.setVolume(app, Float($0))
             }
 
@@ -422,22 +553,29 @@ struct AppRow: View {
                 .frame(width: 30, alignment: .trailing)
 
             Button {
-                model.toggleMute(app)
+                if let device { model.toggle(app, on: device) } else { model.toggleMute(app) }
             } label: {
-                Image(systemName: setting.muted ? "speaker.slash.fill" : "speaker.fill")
+                Image(systemName: silent ? "speaker.slash.fill" : "speaker.fill")
                     .font(.system(size: 11))
                     .frame(width: 16, height: 16)
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .foregroundStyle(setting.muted ? Color.red : Color.secondary)
-            .help(setting.muted ? "Unmute \(app.name)" : "Mute \(app.name)")
+            .foregroundStyle(silent ? Color.red : Color.secondary)
+            .help(device.map { offHere ? "Play \(app.name) on \($0.name)" : "Stop \(app.name) on \($0.name)" }
+                  ?? (setting.muted ? "Unmute \(app.name)" : "Mute \(app.name)"))
         }
         .fixedSize(horizontal: false, vertical: true)
         .padding(.leading, DeviceSection.iconCenterX)
         .padding(.trailing, 14)
         .contentShape(Rectangle())
         .contextMenu {
+            if device == nil { routingMenu(setting) }
+        }
+    }
+
+    @ViewBuilder
+    private func routingMenu(_ setting: AppSetting) -> some View {
             Section("Play \(app.name) through") {
                 Button {
                     model.setOutput(app, uid: nil)
@@ -454,7 +592,6 @@ struct AppRow: View {
                     }
                 }
             }
-        }
     }
 }
 
