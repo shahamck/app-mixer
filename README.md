@@ -1,5 +1,7 @@
 # AUDIX
 
+<img src="Resources/audix-logo.svg" alt="AUDIX logo" width="120">
+
 A menu bar mixer for macOS, in Liquid Glass. Click the knob in the menu bar:
 
 - **Quiet:** just your output device and volume, like the system volume HUD.
